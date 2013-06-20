@@ -20,12 +20,13 @@
 #include <cutils/log.h>
 #include "GLEncoder.h"
 #include "GL2Encoder.h"
+#include <cutils/properties.h>
 
 #define STREAM_BUFFER_SIZE  4*1024*1024
 #define STREAM_PORT_NUM     22468
 
 /* Set to 1 to use a QEMU pipe, or 0 for a TCP connection */
-#define  USE_QEMU_PIPE  1
+#define  USE_QEMU_PIPE  0
 
 HostConnection::HostConnection() :
     m_stream(NULL),
@@ -84,7 +85,7 @@ HostConnection *HostConnection::get()
                 return NULL;
             }
 
-            if (stream->connect("10.0.2.2", STREAM_PORT_NUM) < 0) {
+            if (stream->connect("127.0.0.1", STREAM_PORT_NUM) < 0) {
                 ALOGE("Failed to connect to host (TcpStream)!!!\n");
                 delete stream;
                 delete con;

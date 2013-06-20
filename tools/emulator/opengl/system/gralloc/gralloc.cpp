@@ -85,6 +85,7 @@ struct gralloc_device_t {
 //
 struct fb_device_t {
     framebuffer_device_t  device;
+    int orientation;
 };
 
 static int map_buffer(cb_handle_t *cb, void **vaddr)
@@ -830,6 +831,11 @@ static int gralloc_device_open(const hw_module_t* module,
         D("gralloc: min_swap=%d\n", min_si);
         EGLint max_si = rcEnc->rcGetFBParam(rcEnc, FB_MAX_SWAP_INTERVAL);
         D("gralloc: max_swap=%d\n", max_si);
+        EGLint mDPI = rcEnc->rcGetFBParam(rcEnc, FB_DPI);
+        D("gralloc: DPI=%d\n", mDPI);
+        char set_dpi[128];
+        sprintf(set_dpi, "/system/bin/setdpi %d", mDPI);
+        system(set_dpi);
 
         //
         // Allocate memory for the framebuffer device
@@ -911,7 +917,7 @@ fallback_init(void)
     char  prop[PROPERTY_VALUE_MAX];
     void* module;
 
-    property_get("ro.kernel.qemu.gles", prop, "0");
+    property_get("androVM.gles", prop, "0");
     if (atoi(prop) > 0) {
         return;
     }
