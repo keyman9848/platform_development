@@ -506,6 +506,45 @@ static int fb_close(struct hw_device_t *dev)
     return 0;
 }
 
+static int fb_manageOrientation(struct framebuffer_device_t* dev, int orientation)
+{
+    fb_device_t *fbdev = (fb_device_t *)dev;
+
+    if (!fbdev) {
+        return -1;
+    }
+
+    // Make sure we have host connection
+    DEFINE_AND_VALIDATE_HOST_CONNECTION;
+
+    ALOGI("setOrientation: orientation=%d\n", orientation);
+
+    if (fbdev->orientation != orientation) {
+        switch (orientation) {
+         case 0:
+            rcEnc->rcSetOrientation(rcEnc, 0);
+            break;
+         case 1:
+            rcEnc->rcSetOrientation(rcEnc, 90);
+            break;
+         case 2:
+            rcEnc->rcSetOrientation(rcEnc, 180);
+            break;
+         case 3:
+            rcEnc->rcSetOrientation(rcEnc, 270);
+            break;
+        }
+        fbdev->orientation = orientation;
+    }
+
+    return 0;
+}
+
+static void fb_setOrientation(struct framebuffer_device_t* dev, int orientation)
+{
+    if (fb_manageOrientation(dev, orientation)<0)
+        ALOGE("Error setting Orientation");
+}
 
 //
 // gralloc module functions - refcount + locking interface
@@ -857,7 +896,7 @@ static int gralloc_device_open(const hw_module_t* module,
         dev->device.post            = fb_post;
         dev->device.setUpdateRect   = 0; //fb_setUpdateRect;
         dev->device.compositionComplete = fb_compositionComplete; //XXX: this is a dummy
-
+        dev->device.setOrientation = fb_setOrientation;
         const_cast<uint32_t&>(dev->device.flags) = 0;
         const_cast<uint32_t&>(dev->device.width) = width;
         const_cast<uint32_t&>(dev->device.height) = height;

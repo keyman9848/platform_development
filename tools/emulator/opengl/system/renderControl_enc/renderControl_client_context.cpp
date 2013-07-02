@@ -37,6 +37,7 @@ int renderControl_client_context_t::initDispatchByName(void *(*getProc)(const ch
 	ptr = getProc("rcColorBufferCacheFlush", userData); set_rcColorBufferCacheFlush((rcColorBufferCacheFlush_client_proc_t)ptr);
 	ptr = getProc("rcReadColorBuffer", userData); set_rcReadColorBuffer((rcReadColorBuffer_client_proc_t)ptr);
 	ptr = getProc("rcUpdateColorBuffer", userData); set_rcUpdateColorBuffer((rcUpdateColorBuffer_client_proc_t)ptr);
+	ptr = getProc("rcSetOrientation", userData); set_rcSetOrientation((rcSetOrientation_client_proc_t)ptr);
 	return 0;
 }
 

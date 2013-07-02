@@ -31,6 +31,7 @@ extern "C" {
 	EGLint rcColorBufferCacheFlush(uint32_t colorbuffer, EGLint postCount, int forRead);
 	void rcReadColorBuffer(uint32_t colorbuffer, GLint x, GLint y, GLint width, GLint height, GLenum format, GLenum type, void* pixels);
 	int rcUpdateColorBuffer(uint32_t colorbuffer, GLint x, GLint y, GLint width, GLint height, GLenum format, GLenum type, void* pixels);
+	void rcSetOrientation(uint32_t orientation);
 };
 
 #endif
